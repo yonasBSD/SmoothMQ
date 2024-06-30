@@ -54,7 +54,7 @@ func NewDashboard(queue models.Queue, tenantManager models.TenantManager) *Dashb
 }
 
 func (d *Dashboard) Start() error {
-	return d.app.Listen(":3000")
+	return d.app.Listen(":4000")
 }
 
 func (d *Dashboard) Stop() error {

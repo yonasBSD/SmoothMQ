@@ -88,7 +88,7 @@ func (s *SQS) authMiddleware(c *fiber.Ctx) error {
 }
 
 func (s *SQS) Start() error {
-	return s.app.Listen(":3001")
+	return s.app.Listen(":4001")
 }
 
 func (s *SQS) Stop() error {
