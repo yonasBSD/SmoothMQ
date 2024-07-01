@@ -1,6 +1,7 @@
 package dashboard
 
 import (
+  "fmt"
 	"embed"
 	"errors"
 	"io/fs"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
+	"github.com/spf13/viper"
 )
 
 //go:embed views/*
@@ -54,7 +56,8 @@ func NewDashboard(queue models.Queue, tenantManager models.TenantManager) *Dashb
 }
 
 func (d *Dashboard) Start() error {
-	return d.app.Listen(":4000")
+  var port = viper.Get("ui-port")
+	return d.app.Listen(fmt.Sprintf(":%s", port))
 }
 
 func (d *Dashboard) Stop() error {

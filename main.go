@@ -7,6 +7,8 @@ import (
 	"q/cmd/tester"
 	"q/models"
 	"q/queue/sqlite"
+
+  "github.com/spf13/viper"
 )
 
 type DefaultTenantManager struct{}
@@ -35,7 +37,7 @@ func Run(tm models.TenantManager, queue models.Queue) {
 	flag.IntVar(&numSenders, "senders", 0, "Number of send goroutines")
 	flag.IntVar(&numMessagesPerGoroutine, "messages", 1, "Number of messages to send per goroutine")
 	flag.IntVar(&numReceivers, "receivers", 0, "Number of receive goroutines")
-	flag.StringVar(&endpoint, "endpoint", "http://localhost:3001", "SQS endpoint for testing")
+	flag.StringVar(&endpoint, "endpoint", "http://localhost:4001", "SQS endpoint for testing")
 
 	flag.Parse()
 
@@ -44,6 +46,16 @@ func Run(tm models.TenantManager, queue models.Queue) {
 	} else {
 		smoothmq.Run(tm, queue)
 	}
+}
+
+func init() {
+  viper.AutomaticEnv()
+
+  viper.BindEnv("ui-port", "UI_PORT")
+  viper.BindEnv("sqs-port", "SQS_PORT")
+
+  viper.SetDefault("ui-port", "4000")
+  viper.SetDefault("sqs-port", "4001")
 }
 
 func main() {

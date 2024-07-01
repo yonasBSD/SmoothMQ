@@ -33,6 +33,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/rs/zerolog"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
+  "github.com/spf13/viper"
 )
 
 type SQS struct {
@@ -88,7 +89,8 @@ func (s *SQS) authMiddleware(c *fiber.Ctx) error {
 }
 
 func (s *SQS) Start() error {
-	return s.app.Listen(":4001")
+  var port = viper.Get("sqs-port")
+	return s.app.Listen(fmt.Sprintf(":%s", port))
 }
 
 func (s *SQS) Stop() error {
