@@ -1,0 +1,61 @@
+# This is a default configuration to launch on fly.io. It does the following:
+#
+# 1. Provisions a single machine as the message queue. 
+# 2. Creates a 1 GB volume to store data (such as queue messages)
+# 3. Exposes the SQS server on :443
+# 4. Exposes the dashboard on :8080
+# 5. Exposes prometheus metrics on :2112
+#
+# It is important that only 1 machine is provisioned. Everything else 
+# (volume size, server size) can be tweaked.
+
+[build]
+
+[env]
+  Q_SQLITE_PATH = '/data/smoothmq.sqlite'
+
+[[mounts]]
+  source = 'smoothmq_data'
+  destination = '/data'
+  initial_size = '1gb'
+  processes = ['app']
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  max_machines_running = 1
+  processes = ['app']
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 3001
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 0
+  max_machines_running = 1
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 3000
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  max_machines_running = 1
+
+  [[services.ports]]
+    port = 8080
+    handlers = ['tls', 'http']
+
+[[vm]]
+  size = 'shared-cpu-1x'
+
+[[metrics]]
+  port = 2112
+  path = '/metrics'
