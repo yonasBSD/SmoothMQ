@@ -33,9 +33,10 @@ type ServerCommand struct {
 	SQLite    SQLiteConfig    `embed:"" prefix:"sqlite-" envprefix:"Q_SQLITE_"`
 	Metrics   MetricsConfig   `embed:"" prefix:"metrics-" name:"metrics" envprefix:"Q_METRICS_"`
 
-	DisableTelemetry bool `name:"disable-telemetry" default:"false" env:"DISABLE_TELEMETRY"`
-	UseSinglePort    bool `name:"use-single-port" default:"false" env:"Q_SERVER_USE_SINGLE_PORT" help:"Enables having all HTTP services run on a single port with different endpoints"`
-	Port             int  `name:"port" default:"8080" env:"PORT" help:"If use-single-port is enabled, this is the port number for the server"`
+	DisableTelemetry bool   `name:"disable-telemetry" default:"false" env:"DISABLE_TELEMETRY"`
+	UseSinglePort    bool   `name:"use-single-port" default:"false" env:"Q_SERVER_USE_SINGLE_PORT" help:"Enables having all HTTP services run on a single port with different endpoints"`
+	Port             int    `name:"port" default:"8080" env:"PORT" help:"If use-single-port is enabled, this is the port number for the server"`
+	Host             string `name:"host" default:"localhost" env:"HOST" help:"If use-single-port is enabled, this is the hostname or ip address for the server"`
 }
 
 type LogConfig struct {
@@ -45,6 +46,7 @@ type LogConfig struct {
 
 type MetricsConfig struct {
 	PrometheusEnabled bool   `name:"prometheus-enabled" default:"true" env:"PROMETHEUS_ENABLED"`
+	PrometheusHost    string `name:"prometheus-host" default:"localhost" env:"PROMETHEUS_HOST"`
 	PrometheusPort    int    `name:"prometheus-port" default:"2112" env:"PROMETHEUS_PORT"`
 	PrometheusPath    string `name:"prometheus-path" default:"/metrics" env:"PROMETHEUS_PATH"`
 }
@@ -55,6 +57,7 @@ type SQLiteConfig struct {
 
 type SQSConfig struct {
 	Enabled          bool     `name:"enabled" default:"true" help:"Enable SQS protocol for queue" env:"ENABLED"`
+	Host             string   `name:"host" default:"localhost" help:"hostname or ip address for SQS protocol" env:"HOST"`
 	Port             int      `name:"port" default:"3001" help:"HTTP port for SQS protocol" env:"PORT"`
 	Keys             []AWSKey `name:"keys" default:"DEV_ACCESS_KEY_ID:DEV_SECRET_ACCESS_KEY" env:"KEYS"`
 	ParseCelery      bool     `name:"parse-celery" default:"true" env:"PARSE_CELERY" help:"Parse Celery messages. Lets you search by celery message ID and task type."`
@@ -90,6 +93,7 @@ func (k *AWSKey) Decode(ctx *kong.DecodeContext) error {
 
 type DashboardConfig struct {
 	Enabled bool   `name:"enabled" help:"Enable web dashboard" default:"true" env:"ENABLED"`
+	Host    string `name:"host" help:"hostname or ip address for dashboard" default:"localhost" env:"HOST"`
 	Port    int    `name:"port" help:"HTTP port for dashboard" default:"3000" env:"PORT"`
 	Dev     bool   `name:"dev" help:"Run dashboard in dev mode, refresh templates from local" default:"false" env:"DEV"`
 	User    string `name:"user" help:"Username for auth" default:"" env:"USER"`

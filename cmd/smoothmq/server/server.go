@@ -74,10 +74,10 @@ func Run(tm models.TenantManager, queue models.Queue, cfg config.ServerCommand) 
 		}()
 
 		if cfg.Metrics.PrometheusEnabled {
-			fmt.Printf("Prometheus metrics: http://localhost:%d%s\n", cfg.Metrics.PrometheusPort, cfg.Metrics.PrometheusPath)
+			fmt.Printf("Prometheus metrics: http://%s:%d%s\n", cfg.Metrics.PrometheusHost, cfg.Metrics.PrometheusPort, cfg.Metrics.PrometheusPath)
 			go func() {
 				http.Handle(cfg.Metrics.PrometheusPath, promhttp.Handler())
-				http.ListenAndServe(fmt.Sprintf(":%d", cfg.Metrics.PrometheusPort), nil)
+				http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.Metrics.PrometheusHost, cfg.Metrics.PrometheusPort), nil)
 			}()
 		}
 
@@ -93,21 +93,21 @@ func Run(tm models.TenantManager, queue models.Queue, cfg config.ServerCommand) 
 
 		if cfg.Dashboard.Enabled {
 			app.Mount("/", dashboardServer.App)
-			fmt.Printf("Dashboard http://localhost:%d\n", cfg.Port)
+			fmt.Printf("Dashboard http://%s:%d\n", cfg.Host, cfg.Port)
 		}
 
 		if cfg.SQS.Enabled {
 			app.Mount("/sqs", sqsServer.App)
-			fmt.Printf("SQS Endpoint http://localhost:%d/sqs\n", cfg.Port)
+			fmt.Printf("SQS Endpoint http://%s:%d/sqs\n", cfg.Host, cfg.Port)
 		}
 
 		if cfg.Metrics.PrometheusEnabled {
 			app.Group("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
-			fmt.Printf("Prometheus http://localhost:%d/metrics\n", cfg.Port)
+			fmt.Printf("Prometheus http://%s:%d/metrics\n", cfg.Host, cfg.Port)
 		}
 
 		go func() {
-			app.Listen(fmt.Sprintf(":%d", cfg.Port))
+			app.Listen(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port))
 		}()
 
 		<-c // This blocks the main thread until an interrupt is received
