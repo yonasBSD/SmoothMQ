@@ -3,6 +3,8 @@ package sqlite
 import (
 	"errors"
 	"os"
+	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -158,14 +160,26 @@ func (q *SQLiteQueue) CreateQueue(tenantId int64, properties models.QueuePropert
 	q.Mu.Lock()
 	defer q.Mu.Unlock()
 
-	// TODO: validate, trim queue names. ensure length and valid characters.
+	if len(properties.Name) > 80 {
+		return models.ErrInvalidQueueName
+	}
+
+	regex, err := regexp.Compile(`^[a-zA-Z0-9-_]+$`)
+	if err != nil {
+		return err
+	}
+
+	var nameTrimmed = strings.TrimSpace(properties.Name)
+	if !regex.MatchString(nameTrimmed) {
+		return models.ErrInvalidQueueName
+	}
 
 	qId := q.snow.Generate()
 
 	res := q.DBG.Create(&Queue{
 		ID:                qId.Int64(),
 		TenantID:          tenantId,
-		Name:              properties.Name,
+		Name:              nameTrimmed,
 		RateLimit:         properties.RateLimit,
 		MaxRetries:        properties.MaxRetries,
 		VisibilityTimeout: properties.VisibilityTimeout,
