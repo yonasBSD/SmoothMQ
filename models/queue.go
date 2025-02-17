@@ -2,6 +2,7 @@ package models
 
 import "errors"
 
+var ErrInvalidQueueName = errors.New("Invalid queue name")
 var ErrQueueExists = errors.New("Queue already exists")
 
 type FilterCriteria struct {
