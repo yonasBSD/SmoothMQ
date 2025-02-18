@@ -36,7 +36,7 @@ type ServerCommand struct {
 	DisableTelemetry bool   `name:"disable-telemetry" default:"false" env:"DISABLE_TELEMETRY"`
 	UseSinglePort    bool   `name:"use-single-port" default:"false" env:"Q_SERVER_USE_SINGLE_PORT" help:"Enables having all HTTP services run on a single port with different endpoints"`
 	Port             int    `name:"port" default:"8080" env:"PORT" help:"If use-single-port is enabled, this is the port number for the server"`
-	Host             string `name:"host" default:"localhost" env:"HOST" help:"If use-single-port is enabled, this is the hostname or ip address for the server"`
+	Host             string `name:"host" env:"HOST" help:"If use-single-port is enabled, this is the hostname or ip address for the server"`
 }
 
 type LogConfig struct {
