@@ -135,8 +135,8 @@ func (s *SQS) Start() error {
 		return nil
 	}
 
-	fmt.Printf("SQS Endpoint: http://localhost:%d\n", s.cfg.Port)
-	return s.App.Listen(fmt.Sprintf(":%d", s.cfg.Port))
+	fmt.Printf("SQS Endpoint: http://%s:%d\n", s.cfg.Host, s.cfg.Port)
+	return s.App.Listen(fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port))
 }
 
 func (s *SQS) Stop() error {

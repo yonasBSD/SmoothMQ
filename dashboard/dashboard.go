@@ -98,8 +98,8 @@ func (d *Dashboard) Start() error {
 		return nil
 	}
 
-	fmt.Printf("Dashboard: http://localhost:%d\n", d.cfg.Port)
-	return d.App.Listen(fmt.Sprintf(":%d", d.cfg.Port))
+	fmt.Printf("Dashboard: http://%s:%d\n", d.cfg.Host, d.cfg.Port)
+	return d.App.Listen(fmt.Sprintf("%s:%d", d.cfg.Host, d.cfg.Port))
 }
 
 func (d *Dashboard) Stop() error {
